@@ -3,7 +3,7 @@ module.exports = function toReadable (number) {
   const ones = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
   const teens = ['ten', 'eleven', 'twelve', 'thirteen',, 'fifteen',,, 'eighteen'];
   const tens = [,, 'twenty', 'thirty', 'forty', 'fifty',,, 'eighty'];
-  const hundredPlus = ['thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion'];
+  const hundredPlus = [, 'thousand', 'million', 'billion', 'trillion', 'quadrillion', 'quintillion'];
   const minus = number < 0;
 
   number = Math.abs(number);
@@ -27,30 +27,17 @@ module.exports = function toReadable (number) {
     return result;
   };
 
-  let result = parseHundreds(number % 1000);
-
-  let n = number;
+  let result = [], n = number;
   for (let i = 0; i < hundredPlus.length; i += 1) {
+    const hundreds = parseHundreds(n % 1000);
+    hundredPlus[i] && hundreds.push(hundredPlus[i]);
+    if (hundreds.length)
+      result = [...hundreds, ...result];
+    
     n = Math.trunc(n / 1000);
     if (n === 0)
       break;
-    const hundreds = parseHundreds(n % 1000);
-    if (hundreds.length)
-      result = [...parseHundreds(n % 1000), hundredPlus[i], ...result];
   }
 
-  return (minus ? '-' : '') + result.join(' ');
-  // return `"${result.join(' ')}"`;
+  return (minus ? '- ' : '') + result.join(' ');
 }
-
-console.log(module.exports(100));
-console.log(module.exports(910));
-console.log(module.exports(999));
-console.log(module.exports(1999));
-console.log(module.exports(5000));
-console.log(module.exports(32440));
-console.log(module.exports(99001));
-console.log(module.exports(199501));
-console.log(module.exports(2399001));
-console.log(module.exports(4422399001));
-console.log(module.exports(4000000000));
